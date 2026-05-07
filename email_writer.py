@@ -3,8 +3,8 @@ email_writer.py (v4) - Truly personalised using actual job descriptions
 """
 
 import os
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+from google.generativeai import types
 from dotenv import load_dotenv
 from config import CANDIDATE, SALARY
 
