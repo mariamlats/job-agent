@@ -10,7 +10,7 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
-DB_PATH = Path.home() / "Desktop" / "job-agent" / "applications.db"
+DB_PATH = Path(__file__).parent / "applications.db"
 
 
 def get_connection():
