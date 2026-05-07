@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Agent - Review Drafts</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;padding:20px}
+h1{text-align:center;padding:20px 0;font-size:1.4rem;color:#58a6ff}
+.sub{text-align:center;color:#8b949e;margin-bottom:20px;font-size:.9rem}
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:20px;max-width:680px;margin-left:auto;margin-right:auto}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.co{font-size:1.1rem;font-weight:600;color:#58a6ff}
+.score{background:#1f6feb;color:#fff;padding:3px 10px;border-radius:20px;font-size:.8rem}
+.role{color:#8b949e;font-size:.9rem;margin-bottom:4px}
+.to{color:#3fb950;font-size:.85rem;margin-bottom:12px}
+.subj{font-weight:600;margin-bottom:8px;font-size:.95rem}
+.body{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;font-size:.85rem;line-height:1.6;white-space:pre-wrap;max-height:180px;overflow-y:auto;color:#c9d1d9}
+.acts{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;padding:12px;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.ok{background:#238636;color:#fff}
+.no{background:#da3633;color:#fff}
+.ed{background:#388bfd22;color:#58a6ff;border:1px solid #1f6feb;flex:.5}
+.edit-area{width:100%;background:#0d1117;border:1px solid #388bfd;border-radius:8px;padding:10px;color:#e6edf3;font-size:.85rem;line-height:1.6;margin-top:10px;display:none;resize:vertical;min-height:100px}
+.empty{text-align:center;padding:60px 20px;color:#8b949e}
+.ei{font-size:3rem;margin-bottom:10px}
+.tok-lbl{text-align:center;color:#8b949e;font-size:.8rem;margin-bottom:8px}
+.tok{width:100%;max-width:680px;display:block;margin:0 auto 20px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px;color:#e6edf3;font-size:.85rem}
+.status{text-align:center;padding:10px;border-radius:8px;margin:10px auto;max-width:680px;font-size:.9rem;display:none}
+.sok{background:#238636;color:#fff}
+.serr{background:#da3633;color:#fff}
+</style>
+</head>
+<body>
+<h1>&#x1F916; Job Agent - Review Drafts</h1>
+<p class="sub">Approve to send &bull; Skip to discard &bull; Edit to tweak</p>
+<p class="tok-lbl">GitHub Token (repo scope) - saved in your browser:</p>
+<input type="password" id="tok" class="tok" placeholder="ghp_..." oninput="localStorage.setItem('gh_tok',this.value)">
+<div id="status" class="status"></div>
+<div id="app"></div>
+<script>
+const O='mariamlats',R='job-agent';
+document.getElementById('tok').value=localStorage.getItem('gh_tok')||'';
+function tok(){return document.getElementById('tok').value.trim()}
+function status(m,ok){const e=document.getElementById('status');e.textContent=m;e.className='status '+(ok?'sok':'serr');e.style.display='block';setTimeout(()=>e.style.display='none',4000)}
+async function load(){
+  const c=document.getElementById('app');
+  c.innerHTML='<div class="empty"><div class="ei">&#x23F3;</div><p>Loading...</p></div>';
+  try{
+    const r=await fetch('https://raw.githubusercontent.com/'+O+'/'+R+'/main/pending_drafts.json?t='+Date.now());
+    if(!r.ok){c.innerHTML='<div class="empty"><div class="ei">&#x1F4ED;</div><p>No pending drafts yet.</p></div>';return}
+    const d=await r.json();
+    if(!d.length){c.innerHTML='<div class="empty"><div class="ei">&#x2705;</div><p>All caught up! No pending drafts.</p></div>';return}
+    c.innerHTML=d.map(card).join('');
+  }catch(e){c.innerHTML='<div class="empty"><div class="ei">&#x274C;</div><p>'+e.message+'</p></div>'}
+}
+function card(d){
+  return '<div class="card" id="c'+d.id+'"><div class="hdr"><div><div class="co">'+d.company+'</div><div class="role">'+d.role+'</div><div class="to">&#x1F4EC; '+d.contact_email+'</div></div><span class="score">&#x2B50; '+((d.hire_score||0).toFixed(2))+'</span></div><div class="subj">Subject: '+d.email_subject+'</div><div class="body" id="b'+d.id+'">'+d.email_body+'</div><textarea class="edit-area" id="e'+d.id+'">'+d.email_body+'</textarea><div class="acts"><button class="btn ok" onclick="approve('+d.id+')">&#x2705; Approve &amp; Send</button><button class="btn no" onclick="skip('+d.id+')">&#x274C; Skip</button><button class="btn ed" onclick="edit('+d.id+')">&#x270F;&#xFE0F; Edit</button></div></div>';
+}
+function edit(id){
+  const b=document.getElementById('b'+id),e=document.getElementById('e'+id);
+  if(!e.style.display||e.style.display==='none'){e.style.display='block';b.style.display='none'}
+  else{b.textContent=e.value;e.style.display='none';b.style.display='block'}
+}
+async function approve(id){
+  if(!tok()){status('Enter your GitHub token first!',false);return}
+  const e=document.getElementById('e'+id),b=document.getElementById('b'+id);
+  const body=e.style.display!=='none'?e.value:b.textContent;
+  const c=document.getElementById('c'+id);c.style.opacity='.5';
+  const r=await fetch('https://api.github.com/repos/'+O+'/'+R+'/actions/workflows/send_email.yml/dispatches',{method:'POST',headers:{'Authorization':'token '+tok(),'Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs:{app_id:String(id),edited_body:body}})});
+  if(r.status===204){c.innerHTML='<div style="text-align:center;padding:20px;color:#3fb950">&#x2705; Sending...</div>';status('Approved! Email sending now.',true)}
+  else{const er=await r.json();status('Error: '+(er.message||r.status),false);c.style.opacity='1'}
+}
+async function skip(id){
+  if(!tok()){status('Enter your GitHub token first!',false);return}
+  const c=document.getElementById('c'+id);c.style.opacity='.5';
+  const r=await fetch('https://api.github.com/repos/'+O+'/'+R+'/actions/workflows/skip_email.yml/dispatches',{method:'POST',headers:{'Authorization':'token '+tok(),'Content-Type':'application/json'},body:JSON.stringify({ref:'main',inputs:{app_id:String(id)}})});
+  if(r.status===204){c.innerHTML='<div style="text-align:center;padding:20px;color:#8b949e">&#x274C; Skipped</div>';status('Skipped.',true)}
+  else{c.style.opacity='1';status('Error skipping',false)}
+}
+load();setInterval(load,60000);
+</script>
+</body>
+</html>
