@@ -1,6 +1,6 @@
 """
 main.py (v3)
-ââââââââââââ
+Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
 - Ranks jobs by hire likelihood before selecting top 30
 - Switched to gemini-1.5-flash (1500 req/day free)
 - Fixed cold outreach subject lines
@@ -29,14 +29,14 @@ from gmail_sender import send_application
 
 def print_banner():
     print("\n" + "="*55)
-    print("  ð¤  Job Agent â Starting Run")
-    print(f"  ð  {datetime.now().strftime('%A %d %B %Y, %H:%M')}")
+    print("  Ã°ÂÂ¤Â  Job Agent Ã¢ÂÂ Starting Run")
+    print(f"  Ã°ÂÂÂ  {datetime.now().strftime('%A %d %B %Y, %H:%M')}")
     print("="*55 + "\n")
 
 
 def print_stats():
     stats = get_stats()
-    print("\nð Stats:")
+    print("\nÃ°ÂÂÂ Stats:")
     print(f"   Jobs found total:   {stats['total_jobs_found']}")
     print(f"   Applications sent:  {stats['total_sent']}")
     print(f"   Sent today:         {stats['sent_today']}")
@@ -94,7 +94,7 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
     remaining = max_today - sent_today
     print(f"[main] Can send {remaining} more emails today (sent: {sent_today}/{max_today})")
 
-    # ââ Step 1: Scrape ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+    # Ã¢ÂÂÃ¢ÂÂ Step 1: Scrape Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
     print("\n[main] Step 1: Scraping jobs...")
     company_list = str(Path(COMPANY_LIST_PATH).expanduser())
     all_jobs = await scrape_all_jobs(company_list_path=company_list)
@@ -110,17 +110,17 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
     for job in new_jobs:
         save_job(job)
 
-    # ââ Step 2: Rank by hire likelihood ââââââââââââââââââââââââââââââââââââââ
+    # Ã¢ÂÂÃ¢ÂÂ Step 2: Rank by hire likelihood Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
     print(f"\n[main] Step 2: Ranking {len(new_jobs)} jobs by hire likelihood...")
     ranked_jobs = rank_jobs(new_jobs)
 
     if show_ranking:
-        print("\nð Top 10 jobs by hire likelihood:")
+        print("\nÃ°ÂÂÂ Top 10 jobs by hire likelihood:")
         for i, job in enumerate(ranked_jobs[:10], 1):
             print(f"\n  {i}. [{job['hire_score']:.2f}] {job['title']} @ {job['company']}")
             print(explain_score(job))
 
-    # ââ Step 3: Deduplicate â max 1 per company, skip contacted ââââââââââââââ
+    # Ã¢ÂÂÃ¢ÂÂ Step 3: Deduplicate Ã¢ÂÂ max 1 per company, skip contacted Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
     seen_companies = set()
     selected_jobs = []
 
@@ -129,7 +129,7 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
         if company_key in seen_companies:
             continue
         if already_contacted(job["company"], EMAIL_SETTINGS["cooldown_days"]):
-            print(f"[main] Skipping {job['company']} â contacted recently")
+            print(f"[main] Skipping {job['company']} Ã¢ÂÂ contacted recently")
             continue
         seen_companies.add(company_key)
         selected_jobs.append(job)
@@ -137,9 +137,9 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
             break
 
     print(f"[main] Selected top {len(selected_jobs)} jobs after deduplication")
-    print(f"[main] Score range: {selected_jobs[-1]['hire_score']:.2f} â {selected_jobs[0]['hire_score']:.2f}")
+    print(f"[main] Score range: {selected_jobs[-1]['hire_score']:.2f} Ã¢ÂÂ {selected_jobs[0]['hire_score']:.2f}")
 
-    # ââ Step 4: Generate drafts âââââââââââââââââââââââââââââââââââââââââââââââ
+    # Ã¢ÂÂÃ¢ÂÂ Step 4: Generate drafts Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
     print("\n[main] Step 4: Generating email drafts...")
     new_drafts = []
     gemini_calls = 0
@@ -155,7 +155,7 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
         contact_email = email_info.get("best", "")
 
         if not contact_email:
-            print(f"   â  No email found â skipping")
+            print(f"   Ã¢ÂÂ  No email found Ã¢ÂÂ skipping")
             continue
 
         # Rate limiting: 4 calls per 65 seconds (gemini-1.5-flash: 15 RPM free)
@@ -181,24 +181,26 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
         app_id = save_draft(app)
         app["id"] = app_id
         new_drafts.append(app)
-        print(f"   â Draft #{app_id}: {email['subject'][:55]} â {contact_email}")
+        print(f"   Ã¢ÂÂ Draft #{app_id}: {email['subject'][:55]} Ã¢ÂÂ {contact_email}")
 
         # Small delay between calls
         time.sleep(2)
 
     print(f"\n[main] Generated {len(new_drafts)} new drafts")
 
-    # ââ Step 5: Telegram ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-    if not dry_run and new_drafts:
-        print("\n[main] Step 5: Sending drafts to Telegram...")
-        await notify_all_drafts(new_drafts)
-        print(f"[main] {len(new_drafts)} drafts sent â check your Telegram!")
+    # Ã¢ÂÂÃ¢ÂÂ Step 5: Telegram Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+    if not dry_run:
+        print("\n[main] Step 5: Exporting all pending drafts to review page...")
+        from tracker import get_pending_drafts
+        all_pending = get_pending_drafts()
+        await notify_all_drafts(all_pending)
+        print(f"[main] {len(all_pending)} drafts available at https://mariamlats.github.io/job-agent/")
     elif dry_run:
-        print("\n[main] DRY RUN â top drafts by hire likelihood:")
+        print("\n[main] DRY RUN Ã¢ÂÂ top drafts by hire likelihood:")
         for d in new_drafts:
-            print(f"  [{d['id']}] {d['email_subject'][:55]} â {d['contact_email']}")
+            print(f"  [{d['id']}] {d['email_subject'][:55]} Ã¢ÂÂ {d['contact_email']}")
 
-    # ââ Step 6: Send approved emails ââââââââââââââââââââââââââââââââââââââââââ
+    # Ã¢ÂÂÃ¢ÂÂ Step 6: Send approved emails Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
     print("\n[main] Step 6: Processing approved emails...")
     approved = get_approved_unsent()
 
@@ -217,18 +219,18 @@ async def run_pipeline(dry_run=False, max_emails=None, show_ranking=False):
                 if success:
                     mark_sent(app["id"])
                     record_contact(app["company"])
-                    print(f"   â Sent: {app['email_subject'][:50]} â {app['contact_email']}")
+                    print(f"   Ã¢ÂÂ Sent: {app['email_subject'][:50]} Ã¢ÂÂ {app['contact_email']}")
                 else:
-                    print(f"   â Failed: {app['company']}")
+                    print(f"   Ã¢ÂÂ Failed: {app['company']}")
             else:
-                print(f"   [DRY RUN] Would send: {app['email_subject'][:50]} â {app['contact_email']}")
+                print(f"   [DRY RUN] Would send: {app['email_subject'][:50]} Ã¢ÂÂ {app['contact_email']}")
 
     if not dry_run:
         from telegram_bot import send_daily_digest
         await send_daily_digest()
 
     print_stats()
-    print("\n[main] â Run complete!\n")
+    print("\n[main] Ã¢ÂÂ Run complete!\n")
 
 
 def main():
