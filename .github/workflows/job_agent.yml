@@ -42,6 +42,14 @@ jobs:
       - name: Run job agent
         run: python main.py
 
+              - name: Commit pending drafts
+                      run: |
+                                git config user.email "actions@github.com"
+                                          git config user.name "Job Agent"
+                                                    git add pending_drafts.json
+                                                              git diff --staged --quiet || git commit -m "Update pending drafts [skip ci]"
+                                                                        git push
+
       - name: Upload log
         if: always()
         uses: actions/upload-artifact@v4
