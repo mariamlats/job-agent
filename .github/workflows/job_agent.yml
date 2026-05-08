@@ -21,14 +21,13 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          playwright install chromium
-          playwright install-deps chromium
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright
+        run: playwright install chromium
 
       - name: Restore Gmail token
-        run: |
-          echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > gmail_token.pickle
+        run: echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > gmail_token.pickle
 
       - name: Create env file
         run: |
@@ -42,13 +41,13 @@ jobs:
       - name: Run job agent
         run: python main.py
 
-              - name: Commit pending drafts
-                      run: |
-                                git config user.email "actions@github.com"
-                                          git config user.name "Job Agent"
-                                                    git add pending_drafts.json
-                                                              git diff --staged --quiet || git commit -m "Update pending drafts [skip ci]"
-                                                                        git push
+      - name: Commit pending drafts
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "Job Agent"
+          git add pending_drafts.json
+          git diff --staged --quiet || git commit -m "Update pending drafts [skip ci]"
+          git push
 
       - name: Upload log
         if: always()
