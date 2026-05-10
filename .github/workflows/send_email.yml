@@ -8,6 +8,8 @@ on:
       edited_body:
         description: Edited email body
         required: false
+permissions:
+  contents: write
 jobs:
   send:
     runs-on: ubuntu-latest
