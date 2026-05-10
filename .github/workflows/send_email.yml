@@ -40,4 +40,5 @@ jobs:
           git config user.name "Job Agent"
           git add pending_drafts.json
           git diff --staged --quiet || git commit -m "Remove sent draft ${{ inputs.app_id }}"
+          git pull --rebase origin main
           git push
