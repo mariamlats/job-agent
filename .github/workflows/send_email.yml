@@ -41,6 +41,4 @@ jobs:
           git add pending_drafts.json
           git diff --staged --quiet && exit 0
           git commit -m "Remove sent draft ${{ inputs.app_id }}"
-          git fetch origin main
-          git rebase origin/main
-          git push origin main
+          git push origin HEAD:main --force-with-lease
