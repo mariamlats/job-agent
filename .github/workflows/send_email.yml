@@ -34,11 +34,13 @@ jobs:
         run: python send_approved.py "${{ inputs.app_id }}" "${{ inputs.edited_body }}"
       - name: Remove from pending drafts
         run: python remove_draft.py "${{ inputs.app_id }}"
-      - name: Commit updated drafts
+      - name: Commit and push updated drafts
         run: |
           git config user.email "actions@github.com"
           git config user.name "Job Agent"
           git add pending_drafts.json
-          git diff --staged --quiet || git commit -m "Remove sent draft ${{ inputs.app_id }}"
-          git pull --rebase origin main
-          git push
+          git diff --staged --quiet && exit 0
+          git commit -m "Remove sent draft ${{ inputs.app_id }}"
+          git fetch origin main
+          git rebase origin/main
+          git push origin main
