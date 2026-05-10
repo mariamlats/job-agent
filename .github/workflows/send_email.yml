@@ -1,41 +1,41 @@
 name: Send Approved Email
 on:
   workflow_dispatch:
-      inputs:
-            app_id:
-                    description: Application ID
-                            required: true
-                                  edited_body:
-                                          description: Edited body
-                                                  required: false
-                                                  jobs:
-                                                    send:
-                                                        runs-on: ubuntu-latest
-                                                            steps:
-                                                                  - uses: actions/checkout@v4
-                                                                        - uses: actions/setup-python@v5
-                                                                                with:
-                                                                                          python-version: '3.11'
-                                                                                                - name: Install dependencies
-                                                                                                        run: pip install -r requirements.txt
-                                                                                                              - name: Restore Gmail token
-                                                                                                                      run: echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > gmail_token.pickle
-                                                                                                                            - name: Create env file
-                                                                                                                                    run: |
-                                                                                                                                              echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
-                                                                                                                                                        echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
-                                                                                                                                                                  echo "HUNTER_API_KEY=${{ secrets.HUNTER_API_KEY }}" >> .env
-                                                                                                                                                                            echo "GMAIL_SENDER=${{ secrets.GMAIL_SENDER }}" >> .env
-                                                                                                                                                                                      echo "GMAIL_SENDER_NAME=Mariam Latsabidze | AI Engineer" >> .env
-                                                                                                                                                                                                echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
-                                                                                                                                                                                                      - name: Send email
-                                                                                                                                                                                                              run: python send_approved.py "${{ inputs.app_id }}" "${{ inputs.edited_body }}"
-                                                                                                                                                                                                                    - name: Remove from pending drafts
-                                                                                                                                                                                                                            run: python remove_draft.py "${{ inputs.app_id }}"
-                                                                                                                                                                                                                                  - name: Commit updated drafts
-                                                                                                                                                                                                                                          run: |
-                                                                                                                                                                                                                                                    git config user.email "actions@github.com"
-                                                                                                                                                                                                                                                              git config user.name "Job Agent"
-                                                                                                                                                                                                                                                                        git add pending_drafts.json
-                                                                                                                                                                                                                                                                                  git diff --staged --quiet || git commit -m "Sent draft ${{ inputs.app_id }}"
-                                                                                                                                                                                                                                                                                            git push
+    inputs:
+      app_id:
+        description: Application ID to send
+        required: true
+      edited_body:
+        description: Edited email body
+        required: false
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Restore Gmail token
+        run: echo "${{ secrets.GMAIL_TOKEN_B64 }}" | base64 -d > gmail_token.pickle
+      - name: Create env file
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+          echo "HUNTER_API_KEY=${{ secrets.HUNTER_API_KEY }}" >> .env
+          echo "GMAIL_SENDER=${{ secrets.GMAIL_SENDER }}" >> .env
+          echo "GMAIL_SENDER_NAME=Mariam Latsabidze | AI Engineer" >> .env
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+      - name: Send email
+        run: python send_approved.py "${{ inputs.app_id }}" "${{ inputs.edited_body }}"
+      - name: Remove from pending drafts
+        run: python remove_draft.py "${{ inputs.app_id }}"
+      - name: Commit updated drafts
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "Job Agent"
+          git add pending_drafts.json
+          git diff --staged --quiet || git commit -m "Remove sent draft ${{ inputs.app_id }}"
+          git push
