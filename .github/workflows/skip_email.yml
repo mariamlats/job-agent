@@ -1,26 +1,26 @@
 name: Skip Email Draft
 on:
   workflow_dispatch:
-      inputs:
-            app_id:
-                    description: Application ID to skip
-                            required: true
-                            jobs:
-                              skip:
-                                  runs-on: ubuntu-latest
-                                      steps:
-                                            - uses: actions/checkout@v4
-                                                  - uses: actions/setup-python@v5
-                                                          with:
-                                                                    python-version: '3.11'
-                                                                          - name: Install dependencies
-                                                                                  run: pip install -r requirements.txt
-                                                                                        - name: Remove draft
-                                                                                                run: python remove_draft.py "${{ inputs.app_id }}"
-                                                                                                      - name: Commit updated drafts
-                                                                                                              run: |
-                                                                                                                        git config user.email "actions@github.com"
-                                                                                                                                  git config user.name "Job Agent"
-                                                                                                                                            git add pending_drafts.json
-                                                                                                                                                      git diff --staged --quiet || git commit -m "Skip draft ${{ inputs.app_id }}"
-                                                                                                                                                                git push
+    inputs:
+      app_id:
+        description: Application ID to skip
+        required: true
+jobs:
+  skip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Remove draft
+        run: python remove_draft.py "${{ inputs.app_id }}"
+      - name: Commit updated drafts
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "Job Agent"
+          git add pending_drafts.json
+          git diff --staged --quiet || git commit -m "Skip draft ${{ inputs.app_id }}"
+          git push
