@@ -9,15 +9,6 @@
     "hire_score": 0
   },
   {
-    "id": 115,
-    "company": "Zeno",
-    "role": "Python Developer (Experience in Asyncio programming)",
-    "contact_email": "jobs@zeno.com",
-    "email_subject": "Application: Python Developer (Experience in Asyncio programming) \u2014 Mariam Latsabidze",
-    "email_body": "Dear Zeno team,\n\nI came across Zeno and was drawn to your work. I'm Mariam Latsabidze, an AI Engineer based in Rome. I built a WiFi-based tumour detection system (AUC 0.92) for my Bachelor's thesis at Sapienza, and deployed a production invoice automation system cutting processing time 16x.\n\nI'd love to explore a Python Developer (Experience in Asyncio programming) role. CV attached \u2014 open to a brief call?\n\nBest,\nMariam Latsabidze\nmlacabidze4@gmail.com | linkedin.com/in/mariamlats",
-    "hire_score": 0
-  },
-  {
     "id": 114,
     "company": "Durapid Technologies Private Limited",
     "role": "GenAI Python Developer",
