@@ -5,6 +5,8 @@ on:
       app_id:
         description: Application ID to skip
         required: true
+permissions:
+  contents: write
 jobs:
   skip:
     runs-on: ubuntu-latest
