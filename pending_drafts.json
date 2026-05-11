@@ -18,15 +18,6 @@
     "hire_score": 0
   },
   {
-    "id": 110,
-    "company": "Infosys",
-    "role": "Python GenAI Engineer",
-    "contact_email": "jobs@infosys.com",
-    "email_subject": "Application: Python GenAI Engineer \u2014 Mariam Latsabidze",
-    "email_body": "Dear Infosys team,\n\nI came across Infosys and was drawn to your work. I'm Mariam Latsabidze, an AI Engineer based in Rome. I built a WiFi-based tumour detection system (AUC 0.92) for my Bachelor's thesis at Sapienza, and deployed a production invoice automation system cutting processing time 16x.\n\nI'd love to explore a Python GenAI Engineer role. CV attached \u2014 open to a brief call?\n\nBest,\nMariam Latsabidze\nmlacabidze4@gmail.com | linkedin.com/in/mariamlats",
-    "hire_score": 0
-  },
-  {
     "id": 109,
     "company": "Morgan Stanley",
     "role": "Python & Machine Learning Developer - Director - Software Engineer",
